@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Заметки</string>
+    <string name="notes_title">Мои заметки</string>
+    <string name="create_note">Создать заметку</string>
+    <string name="edit_note">Редактировать заметку</string>
+    <string name="delete_note">Удалить заметку</string>
+    <string name="save_note">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="note_title_hint">Заголовок заметки</string>
+    <string name="note_content_hint">Введите текст заметки...</string>
+    <string name="checklist_item_hint">Добавить пункт</string>
+    <string name="text_note">Текстовая заметка</string>
+    <string name="checklist_note">Чек-лист</string>
+    <string name="change_color">Изменить цвет</string>
+    <string name="search_notes">Поиск заметок</string>
+    <string name="sync_status">Статус синхронизации</string>
+    <string name="synced">Синхронизировано</string>
+    <string name="syncing">Синхронизация...</string>
+    <string name="sync_error">Ошибка синхронизации</string>
+    <string name="active_users">Активные пользователи</string>
+    <string name="last_edited_by">Последнее изменение: %s</string>
+    <string name="sign_in_google">Войти через Google</string>
+    <string name="sign_out">Выйти</string>
+    <string name="offline_mode">Офлайн режим</string>
+    <string name="connection_restored">Соединение восстановлено</string>
+</resources>

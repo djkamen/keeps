@@ -1,6 +1,7 @@
 package com.notesapp.data.repositories
 
 import com.notesapp.data.datasources.local.NotesLocalDataSource
+import com.notesapp.data.datasources.remote.GoogleDriveService
 import com.notesapp.data.mappers.NoteMapper
 import com.notesapp.domain.entities.Note
 import com.notesapp.domain.entities.NoteColor
@@ -8,6 +9,7 @@ import com.notesapp.domain.entities.NotesMetadata
 import com.notesapp.domain.repositories.NotesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import android.util.Log
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,8 +18,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class NotesRepositoryImpl @Inject constructor(
-    private val localDataSource: NotesLocalDataSource
-    // TODO: Add remote data source when Google Drive API is implemented
+    private val localDataSource: NotesLocalDataSource,
+    private val googleDriveService: GoogleDriveService
 ) : NotesRepository {
     
     override fun getNotes(): Flow<Result<List<Note>>> {
@@ -45,6 +47,33 @@ class NotesRepositoryImpl @Inject constructor(
         return try {
             val entity = NoteMapper.toEntity(note)
             localDataSource.saveNote(entity)
+            
+            Log.d("NotesRepository", "Note saved locally: ${note.id}")
+            
+            // Попытаемся загрузить в Google Drive
+            try {
+                Log.d("NotesRepository", "Attempting to upload note to Google Drive: ${note.id}")
+                val driveResult = googleDriveService.uploadNote(note)
+                
+                if (driveResult.isSuccess) {
+                    val driveFileId = driveResult.getOrThrow()
+                    Log.d("NotesRepository", "Successfully uploaded to Google Drive: $driveFileId")
+                    // Обновляем запись с ID файла на Drive
+                    val updatedEntity = entity.copy(driveFileId = driveFileId, needsSync = false)
+                    localDataSource.saveNote(updatedEntity)
+                } else {
+                    Log.w("NotesRepository", "Failed to upload to Google Drive: ${driveResult.exceptionOrNull()?.message}")
+                    // Если загрузка в Drive не удалась, помечаем как нужна синхронизация
+                    val syncEntity = entity.copy(needsSync = true)
+                    localDataSource.saveNote(syncEntity)
+                }
+            } catch (e: Exception) {
+                Log.e("NotesRepository", "Exception during Google Drive upload", e)
+                // Если загрузка в Drive не удалась, помечаем как нужна синхронизация
+                val syncEntity = entity.copy(needsSync = true)
+                localDataSource.saveNote(syncEntity)
+            }
+            
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -61,11 +90,17 @@ class NotesRepositoryImpl @Inject constructor(
     }
     
     override suspend fun uploadToCloud(note: Note): Result<String> {
-        // TODO: Implement Google Drive upload
         return try {
-            // For now, just mark as uploaded
-            localDataSource.updateSyncStatus(note.id, false)
-            Result.success("temp_drive_id")
+            val result = googleDriveService.uploadNote(note)
+            if (result.isSuccess) {
+                val driveFileId = result.getOrThrow()
+                // Обновляем статус синхронизации
+                localDataSource.updateSyncStatus(note.id, false)
+                Result.success(driveFileId)
+            } else {
+                localDataSource.updateSyncStatus(note.id, true)
+                result
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }

@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.notesapp-debug-69:/drawable_ic_app_icon.xml.flat",
+        "source": "com.notesapp-main-71:/drawable/ic_app_icon.xml"
+    },
+    {
+        "merged": "com.notesapp-debug-69:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.notesapp-main-71:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.notesapp-debug-69:/xml_backup_rules.xml.flat",
+        "source": "com.notesapp-main-71:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.notesapp-debug-69:/xml_data_extraction_rules.xml.flat",
+        "source": "com.notesapp-main-71:/xml/data_extraction_rules.xml"
+    }
+]

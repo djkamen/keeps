@@ -1,5 +1,7 @@
 package com.notesapp.di
 
+import com.notesapp.data.datasources.remote.GoogleDriveService
+import com.notesapp.data.datasources.remote.GoogleDriveServiceImpl
 import com.notesapp.data.repositories.AuthRepositoryImpl
 import com.notesapp.data.repositories.CollaborationRepositoryImpl
 import com.notesapp.data.repositories.NotesRepositoryImpl
@@ -36,4 +38,10 @@ abstract class RepositoryModule {
     abstract fun bindCollaborationRepository(
         collaborationRepositoryImpl: CollaborationRepositoryImpl
     ): CollaborationRepository
+    
+    @Binds
+    @Singleton
+    abstract fun bindGoogleDriveService(
+        googleDriveServiceImpl: GoogleDriveServiceImpl
+    ): GoogleDriveService
 }

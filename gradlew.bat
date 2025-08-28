@@ -79,7 +79,7 @@ if %ERRORLEVEL% equ 0 goto mainEnd
 
 :fail
 rem Set variable GRADLE_EXIT_CONSOLE if you need the _script_ return code instead of
-rem the _cmd_ return code if the batch script fails.
+rem the _cmd_ return code.
 if not "" == "%GRADLE_EXIT_CONSOLE%" exit 1
 exit /b 1
 

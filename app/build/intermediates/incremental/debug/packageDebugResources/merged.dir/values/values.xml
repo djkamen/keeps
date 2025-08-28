@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="collaboration_indicator">#FF4CAF50</color>
+    <color name="note_blue">#FFE1F4FD</color>
+    <color name="note_default">#FFFFFFFF</color>
+    <color name="note_green">#FFE8F5E8</color>
+    <color name="note_orange">#FFFEF2E0</color>
+    <color name="note_purple">#FFF3E8FF</color>
+    <color name="note_red">#FFFDE1E1</color>
+    <color name="note_yellow">#FFFEF7C0</color>
+    <color name="on_surface_variant">#FF666666</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="surface_variant">#FFF5F5F5</color>
+    <color name="sync_error">#FFF44336</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="active_users">Активные пользователи</string>
+    <string name="app_name">Заметки</string>
+    <string name="cancel">Отмена</string>
+    <string name="change_color">Изменить цвет</string>
+    <string name="checklist_item_hint">Добавить пункт</string>
+    <string name="checklist_note">Чек-лист</string>
+    <string name="connection_restored">Соединение восстановлено</string>
+    <string name="create_note">Создать заметку</string>
+    <string name="delete_note">Удалить заметку</string>
+    <string name="edit_note">Редактировать заметку</string>
+    <string name="gcm_defaultSenderId" translatable="false">123456789</string>
+    <string name="google_api_key" translatable="false">AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="google_app_id" translatable="false">1:123456789:android:abcdef123456</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="google_storage_bucket" translatable="false">notes-app-collaboration.appspot.com</string>
+    <string name="last_edited_by">Последнее изменение: %s</string>
+    <string name="note_content_hint">Введите текст заметки...</string>
+    <string name="note_title_hint">Заголовок заметки</string>
+    <string name="notes_title">Мои заметки</string>
+    <string name="offline_mode">Офлайн режим</string>
+    <string name="project_id" translatable="false">notes-app-collaboration</string>
+    <string name="save_note">Сохранить</string>
+    <string name="search_notes">Поиск заметок</string>
+    <string name="sign_in_google">Войти через Google</string>
+    <string name="sign_out">Выйти</string>
+    <string name="sync_error">Ошибка синхронизации</string>
+    <string name="sync_status">Статус синхронизации</string>
+    <string name="synced">Синхронизировано</string>
+    <string name="syncing">Синхронизация...</string>
+    <string name="text_note">Текстовая заметка</string>
+    <style name="Theme.NotesApp" parent="Theme.AppCompat.DayNight.NoActionBar">
+        
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorAccent">@color/teal_200</item>
+        
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:statusBarColor">@color/purple_700</item>
+    </style>
+</resources>

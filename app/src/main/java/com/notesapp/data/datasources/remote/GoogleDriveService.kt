@@ -8,10 +8,12 @@ import com.google.api.services.drive.DriveScopes
 import com.google.api.services.drive.model.File
 import com.google.api.client.http.ByteArrayContent
 import com.google.gson.Gson
+import com.notesapp.data.datasources.remote.GoogleAuthManager
 import com.notesapp.domain.entities.Note
 import com.notesapp.domain.entities.NotesMetadata
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import android.util.Log
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -32,13 +34,16 @@ interface GoogleDriveService {
  */
 @Singleton
 class GoogleDriveServiceImpl @Inject constructor(
-    // TODO: Add GoogleAccountCredential when Google Sign-In is implemented
+    private val authManager: GoogleAuthManager
 ) : GoogleDriveService {
     
     private val gson = Gson()
     private var driveService: Drive? = null
     private val notesFolder = "Notes App"
     private val targetFolderId = "1KzLFmGOmBIuisUA4F4oqcoAo22AVQRsU" // From provided link
+    
+    // Отключаем тестовый режим для работы с реальным Google Drive
+    private val testMode = false
     
     /**
      * Initialize Google Drive service with credentials
@@ -56,27 +61,59 @@ class GoogleDriveServiceImpl @Inject constructor(
     override suspend fun uploadNote(note: Note): Result<String> {
         return try {
             withContext(Dispatchers.IO) {
-                // TODO: Initialize drive service when Google Sign-In is ready
-                // val drive = driveService ?: return@withContext Result.failure(IllegalStateException("Drive service not initialized"))
+                Log.d("GoogleDriveService", "Attempting to upload note: ${note.id}")
                 
-                // Convert note to JSON
+                if (testMode) {
+                    Log.d("GoogleDriveService", "Test mode enabled - simulating successful upload")
+                    Log.d("GoogleDriveService", "Note would be uploaded to folder: $targetFolderId")
+                    Log.d("GoogleDriveService", "Note content: ${note.title} - ${(note.content as? com.notesapp.domain.entities.NoteContent.Text)?.content?.take(50)}...")
+                    
+                    // Симуляция успешной загрузки
+                    val simulatedFileId = "test_file_${note.id}_${System.currentTimeMillis()}"
+                    Log.d("GoogleDriveService", "Simulated upload successful with ID: $simulatedFileId")
+                    return@withContext Result.success(simulatedFileId)
+                }
+                
+                // Проверяем, аутентифицирован ли пользователь
+                if (!authManager.isSignedIn()) {
+                    Log.w("GoogleDriveService", "User is not signed in to Google")
+                    return@withContext Result.failure(IllegalStateException("User not signed in to Google"))
+                }
+                
+                // Получаем credential для Google Drive API
+                val credential = authManager.getCredential()
+                if (credential == null) {
+                    Log.e("GoogleDriveService", "Failed to get Google credentials")
+                    return@withContext Result.failure(IllegalStateException("Failed to get Google credentials"))
+                }
+                
+                Log.d("GoogleDriveService", "Got credentials, initializing Drive service")
+                
+                val drive = initializeDriveService(credential)
+                
+                // Конвертируем заметку в JSON
                 val noteJson = gson.toJson(note)
                 val fileContent = ByteArrayContent("application/json", noteJson.toByteArray())
                 
-                // Create file metadata
+                // Создаем метаданные файла
                 val fileMetadata = File().apply {
-                    name = "${note.id}.json"
+                    name = "note_${note.id}.json"
                     parents = listOf(targetFolderId)
                 }
                 
-                // For now, return a mock success
-                // val uploadedFile = drive.files().create(fileMetadata, fileContent)
-                //     .setFields("id")
-                //     .execute()
+                Log.d("GoogleDriveService", "Uploading file to Google Drive folder: $targetFolderId")
                 
-                Result.success("mock_drive_file_id_${note.id}")
+                // Загружаем файл на Google Drive
+                val uploadedFile = drive.files().create(fileMetadata, fileContent)
+                    .setFields("id")
+                    .execute()
+                
+                Log.d("GoogleDriveService", "Successfully uploaded note to Google Drive with ID: ${uploadedFile.id}")
+                Log.d("GoogleDriveService", "Successfully uploaded note to Google Drive with ID: ${uploadedFile.id}")
+                Result.success(uploadedFile.id)
             }
         } catch (e: Exception) {
+            Log.e("GoogleDriveService", "Failed to upload note to Google Drive", e)
             Result.failure(e)
         }
     }
